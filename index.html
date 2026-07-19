@@ -46,6 +46,14 @@ nav a:hover,nav button:hover,nav a:focus-visible{opacity:1;border-bottom-color:v
 @media(min-width:620px){ .brand{font-size:17px;letter-spacing:.14em} nav{gap:22px;font-size:11.5px} nav a,nav button{font-size:11.5px} .hdr-in{height:66px} :root{--pad-x:32px} }
 @media(min-width:960px){ :root{--pad-x:44px} .hdr-in{height:74px} }
 
+.hdr-right{display:flex;align-items:center;gap:14px}
+.lang-switch{display:flex;align-items:center;gap:5px;padding-left:14px;border-left:1px solid rgba(44,36,28,.16)}
+.lang-switch button{background:none;border:none;cursor:pointer;padding:0;color:var(--ink);opacity:.45;font-family:var(--sans);font-size:10.5px;letter-spacing:.1em;line-height:1}
+.lang-switch button.active{opacity:1;color:var(--terra-deep);font-weight:600}
+.lang-switch button:hover{opacity:1}
+.lang-switch .lang-sep{opacity:.3;font-size:10px;color:var(--ink)}
+@media(min-width:620px){ .hdr-right{gap:22px} .lang-switch button{font-size:11.5px} }
+
 .view{display:none}
 .view.active{display:block}
 
@@ -56,7 +64,6 @@ nav a:hover,nav button:hover,nav a:focus-visible{opacity:1;border-bottom-color:v
 .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.82)}
 .hero .hero-txt{position:absolute;left:0;right:0;bottom:0;padding:0 var(--pad-x) 8vh;color:#fff}
 .hero h1{font-family:var(--serif);font-weight:500;font-size:clamp(24px,4.6vw,44px);letter-spacing:.04em;line-height:1.32;max-width:15em;text-shadow:0 1px 24px rgba(0,0,0,.35)}
-.hero .hero-jp{margin-top:14px;font-size:13px;letter-spacing:.05em;color:rgba(255,255,255,.9);text-shadow:0 1px 16px rgba(0,0,0,.4)}
 .scroll-cue{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);color:rgba(255,255,255,.8);font-size:10px;letter-spacing:.28em;text-transform:uppercase;animation:bob 2.4s ease-in-out infinite}
 @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,6px)}}
 
@@ -69,14 +76,12 @@ nav a:hover,nav button:hover,nav a:focus-visible{opacity:1;border-bottom-color:v
 .work-card:hover img{transform:scale(1.015)}
 .work-meta{display:flex;justify-content:space-between;align-items:baseline;padding:14px 2px 0;flex-wrap:wrap;gap:6px 14px}
 .work-meta h2{font-family:var(--serif);font-weight:500;font-size:21px;letter-spacing:.04em}
-.work-meta .zh{font-size:12px;color:var(--stone);margin-left:12px;letter-spacing:.1em;font-weight:400}
 .work-meta .tag{font-size:11px;letter-spacing:.14em;color:var(--stone);text-transform:uppercase}
 @media(min-width:620px){ .idx-body{padding:80px 0 0} .work-card{margin-bottom:100px} .work-meta h2{font-size:25px} }
 
 .about{padding:52px 0 60px;max-width:620px}
 .about h3{font-family:var(--serif);font-weight:500;font-size:18px;letter-spacing:.1em;margin-bottom:16px}
 .about p{font-size:13.5px}
-.about .ja{font-size:12.5px;color:var(--stone);margin-top:10px}
 
 footer{padding:34px 0 50px}
 .foot-in{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-top:18px;font-size:11px;letter-spacing:.1em;color:var(--stone)}
@@ -93,7 +98,7 @@ footer a:hover{border-bottom:1px solid var(--terra-deep)}
 
 figure.full{margin:28px 0 0}
 figcaption{padding:9px 2px 0;font-size:11px;letter-spacing:.03em;color:var(--stone);line-height:1.7}
-.pj-body{display:grid;grid-template-columns:1fr;gap:34px;padding:46px 0}
+.pj-body{display:grid;grid-template-columns:1fr;gap:34px;padding:46px 0;max-width:720px}
 .pj-body .en{font-size:14px}
 .pj-body .ja{font-size:13px;line-height:2.1}
 .pj-body p+p{margin-top:1.2em}
@@ -104,7 +109,6 @@ section.chapter{padding:20px 0 4px}
 .chapter .ch-label{display:flex;align-items:baseline;gap:12px;margin-bottom:20px;flex-wrap:wrap}
 .chapter .ch-label .no{font-family:var(--serif);color:var(--terra-deep);font-size:12px;letter-spacing:.16em}
 .chapter .ch-label h3{font-family:var(--serif);font-weight:500;font-size:17px;letter-spacing:.08em}
-.chapter .ch-label small{color:var(--stone);font-size:11.5px;letter-spacing:.08em}
 .plan-wrap{background:#F4F1EA;padding:16px;margin:18px 0}
 .credits{padding:48px 0 26px;display:grid;grid-template-columns:1fr;gap:24px}
 .credits dl{font-size:12.5px}
@@ -124,7 +128,6 @@ section.chapter{padding:20px 0 4px}
   .plan-wrap{padding:clamp(16px,4vw,44px);margin:20px 0}
 }
 @media(min-width:760px){ .grid2{grid-template-columns:1fr 1fr} .credits{grid-template-columns:1fr 1fr} }
-@media(min-width:860px){ .pj-body{grid-template-columns:5fr 4fr;gap:70px} }
 </style>
 </head>
 <body>
@@ -132,11 +135,18 @@ section.chapter{padding:20px 0 4px}
 <header>
   <div class="wrap hdr-in">
     <button class="brand" onclick="showIndex()"></button>
-    <nav>
-      <button onclick="showIndex()">Works</button>
-      <button onclick="showIndex(true)">About</button>
-      <a id="nav-contact" href="#">Contact</a>
-    </nav>
+    <div class="hdr-right">
+      <nav>
+        <button onclick="showIndex()">Works</button>
+        <button onclick="showIndex(true)">About</button>
+        <a id="nav-contact" href="#">Contact</a>
+      </nav>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button id="lang-ja" type="button" onclick="setLang('ja')">JA</button>
+        <span class="lang-sep">/</span>
+        <button id="lang-en" type="button" onclick="setLang('en')">EN</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -146,7 +156,6 @@ section.chapter{padding:20px 0 4px}
     <img id="hero-img" alt="">
     <div class="hero-txt">
       <h1 id="hero-h1"></h1>
-      <div class="hero-jp" id="hero-jp"></div>
     </div>
     <div class="scroll-cue">Scroll</div>
   </section>
@@ -159,8 +168,7 @@ section.chapter{padding:20px 0 4px}
   <div class="wrap">
     <div class="about" id="about">
       <h3>About</h3>
-      <p id="about-en"></p>
-      <p class="ja" id="about-ja"></p>
+      <p id="about-text"></p>
     </div>
   </div>
   <footer><div class="wrap"><div class="foot-in">
@@ -187,23 +195,46 @@ section.chapter{padding:20px 0 4px}
 <script>
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
+/* ——— language ——— */
+var LANG = 'ja';
+try{ var savedLang = localStorage.getItem('sawada-lang'); if(savedLang==='en'||savedLang==='ja') LANG = savedLang; }catch(e){}
+var currentWorkIndex = null;
+var ROLE_JA = {
+  'Design':'設計','Photography':'写真','Plasterwork — walls':'左官（壁）','Plasterwork — ceiling':'左官（天井）',
+  'Location':'所在地','Floor area':'延床面積','Completion':'竣工','Featured in':'掲載'
+};
+
+function setLang(l){
+  LANG = l;
+  try{ localStorage.setItem('sawada-lang', l); }catch(e){}
+  document.documentElement.lang = l;
+  updateLangUI();
+  buildIndex();
+  if(currentWorkIndex!==null && document.getElementById('view-project').classList.contains('active')){
+    buildProject(WORKS[currentWorkIndex]);
+  }
+}
+function updateLangUI(){
+  document.getElementById('lang-ja').classList.toggle('active', LANG==='ja');
+  document.getElementById('lang-en').classList.toggle('active', LANG==='en');
+}
+
 /* ——— build index ——— */
 function buildIndex(){
-  document.querySelector('.brand').textContent = SITE.name;
+  document.querySelector('.brand').textContent = LANG==='ja' ? SITE.nameJa : SITE.name;
   document.getElementById('hero-img').src = SITE.heroImage;
-  document.getElementById('hero-h1').textContent = SITE.heroHeadingEn;
-  document.getElementById('hero-jp').textContent = SITE.heroHeadingJa;
-  document.getElementById('about-en').textContent = SITE.aboutEn;
-  document.getElementById('about-ja').textContent = SITE.aboutJa;
+  document.getElementById('hero-h1').textContent = LANG==='ja' ? SITE.heroHeadingJa : SITE.heroHeadingEn;
+  document.getElementById('about-text').textContent = LANG==='ja' ? SITE.aboutJa : SITE.aboutEn;
   document.getElementById('nav-contact').href = 'mailto:'+SITE.email;
-  document.getElementById('foot-copy').textContent = '© '+SITE.name.replace(/\b\w/g,c=>c.toUpperCase());
+  document.getElementById('foot-copy').textContent = '© '+(LANG==='ja' ? SITE.nameJa : SITE.name.replace(/\b\w/g,c=>c.toUpperCase()));
   document.getElementById('foot-links').innerHTML =
     '<a href="mailto:'+esc(SITE.email)+'">'+esc(SITE.email)+'</a> · <a href="'+esc(SITE.instagram)+'">Instagram</a>';
 
   var html = WORKS.map(function(w,i){
+    var title = LANG==='ja' ? w.titleJa : w.title;
     return '<button class="work-card" onclick="showProject('+i+')">'+
-      '<figure><img src="'+esc(w.cover)+'" alt="'+esc(w.title)+'"></figure>'+
-      '<div class="work-meta"><h2>'+esc(w.title)+'<span class="zh">'+esc(w.titleJa)+'</span></h2>'+
+      '<figure><img src="'+esc(w.cover)+'" alt="'+esc(title)+'"></figure>'+
+      '<div class="work-meta"><h2>'+esc(title)+'</h2>'+
       '<span class="tag">'+esc(w.location.split(',').slice(-2).join(',').trim())+' · '+esc(w.year)+'</span></div></button>';
   }).join('');
   document.getElementById('works-list').innerHTML = html;
@@ -212,10 +243,12 @@ function buildIndex(){
 /* ——— build a project ——— */
 function chapterHTML(ch){
   var imgs = ch.images.map(function(im){
-    var cap = '<figcaption>'+esc(im.capEn)+' '+esc(im.capJa)+'</figcaption>';
-    return {wide:!!im.wide, html:'<figure class="'+(im.wide?'full':'half')+'"><img src="'+esc(im.src)+'" alt="'+esc(im.capEn)+'">'+cap+'</figure>'};
+    var capText = LANG==='ja' ? im.capJa : im.capEn;
+    var cap = '<figcaption>'+esc(capText)+'</figcaption>';
+    return {wide:!!im.wide, html:'<figure class="'+(im.wide?'full':'half')+'"><img src="'+esc(im.src)+'" alt="'+esc(capText)+'">'+cap+'</figure>'};
   });
-  var out = '<section class="chapter"><div class="ch-label"><span class="no">'+esc(ch.no)+'</span><h3>'+esc(ch.title)+'</h3><small>'+esc(ch.titleJa)+'</small></div>';
+  var chTitle = LANG==='ja' ? ch.titleJa : ch.title;
+  var out = '<section class="chapter"><div class="ch-label"><span class="no">'+esc(ch.no)+'</span><h3>'+esc(chTitle)+'</h3></div>';
   // wide images go full; consecutive non-wide get paired into grid2
   var buffer=[];
   function flush(){ if(buffer.length){ out+='<div class="grid2">'+buffer.join('')+'</div>'; buffer=[]; } }
@@ -228,28 +261,30 @@ function chapterHTML(ch){
 }
 
 function buildProject(w){
-  document.getElementById('pj-eyebrow').textContent = 'Works — Renovation, '+w.location+', '+w.year;
-  document.getElementById('pj-title').textContent = w.title;
-  document.getElementById('pj-sub').textContent = w.titleJa+(w.subtitleJa?' ― '+w.subtitleJa+' ―':'');
+  var eyebrowLead = LANG==='ja' ? '作品 — 改修, ' : 'Works — Renovation, ';
+  document.getElementById('pj-eyebrow').textContent = eyebrowLead+w.location+', '+w.year;
+  document.getElementById('pj-title').textContent = LANG==='ja' ? w.titleJa : w.title;
+  document.getElementById('pj-sub').textContent = LANG==='ja' ? (w.subtitleJa||'') : '';
 
   var c = document.getElementById('pj-content');
   var lede = '<figure class="full"><img src="'+esc(w.chapters[1]?w.chapters[1].images[0].src:w.cover)+'" alt=""></figure>';
-  var body = '<div class="pj-body"><div class="en">'+
-      w.bodyEn.map(function(p,i){return '<p'+(i===0?' class="lede"':'')+'>'+esc(p)+'</p>';}).join('')+
-    '</div><div class="ja">'+
-      w.bodyJa.map(function(p){return '<p>'+esc(p)+'</p>';}).join('')+
+  var bodyParas = LANG==='ja' ? w.bodyJa : w.bodyEn;
+  var body = '<div class="pj-body"><div class="'+(LANG==='ja'?'ja':'en')+'">'+
+      bodyParas.map(function(p,i){return '<p'+(i===0?' class="lede"':'')+'>'+esc(p)+'</p>';}).join('')+
     '</div></div>';
 
   var chapters = w.chapters.map(function(ch,i){
     return (i>0?'<hr class="rail terra">':'')+chapterHTML(ch);
   }).join('');
 
-  var plan = w.planImage ? '<hr class="rail"><section class="chapter"><div class="ch-label"><span class="no">—</span><h3>Drawings</h3><small>図面</small></div><div class="plan-wrap"><img src="'+esc(w.planImage)+'" alt="Floor plan"></div></section>' : '';
+  var drawingsLabel = LANG==='ja' ? '図面' : 'Drawings';
+  var plan = w.planImage ? '<hr class="rail"><section class="chapter"><div class="ch-label"><span class="no">—</span><h3>'+drawingsLabel+'</h3></div><div class="plan-wrap"><img src="'+esc(w.planImage)+'" alt="Floor plan"></div></section>' : '';
 
   var half = Math.ceil(w.credits.length/2);
   function dl(list){ return '<dl>'+list.map(function(cr){
+    var roleLabel = LANG==='ja' ? (ROLE_JA[cr.role]||cr.role) : cr.role;
     var v = cr.role==='Featured in' ? '<span class="featured"><em>'+esc(cr.value)+'</em></span>' : esc(cr.value);
-    return '<dt>'+esc(cr.role)+'</dt><dd>'+v+'</dd>';
+    return '<dt>'+esc(roleLabel)+'</dt><dd>'+v+'</dd>';
   }).join('')+'</dl>'; }
   var credits = '<div class="credits">'+dl(w.credits.slice(0,half))+dl(w.credits.slice(half))+'</div><hr class="rail">';
 
@@ -264,11 +299,14 @@ function showIndex(scrollAbout){
   else window.scrollTo({top:0,behavior:'instant'});
 }
 function showProject(i){
+  currentWorkIndex = i;
   buildProject(WORKS[i]);
   document.querySelectorAll('.view').forEach(e=>e.classList.remove('active'));
   document.getElementById('view-project').classList.add('active');
   window.scrollTo({top:0,behavior:'instant'});
 }
+document.documentElement.lang = LANG;
+updateLangUI();
 buildIndex();
 </script>
 </body>
