@@ -376,24 +376,30 @@ function heroTouchEnd(e){
   }
 }
 
-/* ——— build a project ——— */
-function chapterHTML(ch){
-  var imgs = ch.images.map(function(im){
-    var capText = LANG==='ja' ? im.capJa : im.capEn;
-    var cap = '<figcaption>'+esc(capText)+'</figcaption>';
-    return {wide:!!im.wide, html:'<figure class="'+(im.wide?'full':'half')+'"><img src="'+esc(im.src)+'" alt="'+esc(capText)+'">'+cap+'</figure>'};
-  });
-  var chTitle = LANG==='ja' ? ch.titleJa : ch.title;
-  var out = '<section class="chapter"><div class="ch-label"><span class="no">'+esc(ch.no)+'</span><h3>'+esc(chTitle)+'</h3></div>';
-  // wide images go full; consecutive non-wide get paired into grid2
-  var buffer=[];
-  function flush(){ if(buffer.length){ out+='<div class="grid2">'+buffer.join('')+'</div>'; buffer=[]; } }
-  imgs.forEach(function(o){
-    if(o.wide){ flush(); out+=o.html; }
-    else { buffer.push(o.html); if(buffer.length===2) flush(); }
-  });
-  flush();
-  return out+'</section>';
+/* ——— build a project (interleaved story: text / image / pair) ——— */
+function storyBlockHTML(b){
+  if(b.type==='text'){
+    var heading = LANG==='ja' ? b.headingJa : b.headingEn;
+    var paras = LANG==='ja' ? b.ja : b.en;
+    var isLede = !heading && b._first;
+    var headingHtml = heading ? '<h3 class="body-h">'+esc(heading)+'</h3>' : '';
+    return '<div class="pj-body">'+headingHtml+
+      paras.map(function(p,pi){return '<p'+(isLede && pi===0 ? ' class="lede"' : '')+'>'+esc(p)+'</p>';}).join('')+
+    '</div>';
+  }
+  if(b.type==='image'){
+    var cap = LANG==='ja' ? b.capJa : b.capEn;
+    return '<figure class="full"><img src="'+esc(b.src)+'" alt="'+esc(cap||'')+'">'+
+      (cap?'<figcaption>'+esc(cap)+'</figcaption>':'')+'</figure>';
+  }
+  if(b.type==='pair'){
+    return '<div class="grid2">'+b.items.map(function(im){
+      var c = LANG==='ja' ? im.capJa : im.capEn;
+      return '<figure class="half"><img src="'+esc(im.src)+'" alt="'+esc(c||'')+'">'+
+        (c?'<figcaption>'+esc(c)+'</figcaption>':'')+'</figure>';
+    }).join('')+'</div>';
+  }
+  return '';
 }
 
 function buildProject(w){
@@ -403,19 +409,12 @@ function buildProject(w){
   document.getElementById('pj-sub').textContent = LANG==='ja' ? (w.subtitleJa||'') : '';
 
   var c = document.getElementById('pj-content');
-  var lede = '<figure class="full"><img src="'+esc(w.chapters[1]?w.chapters[1].images[0].src:w.cover)+'" alt=""></figure>';
-  var body = '<div class="pj-body">'+w.bodySections.map(function(sec,si){
-    var heading = LANG==='ja' ? sec.headingJa : sec.headingEn;
-    var paras = LANG==='ja' ? sec.ja : sec.en;
-    var headingHtml = heading ? '<h3 class="body-h">'+esc(heading)+'</h3>' : '';
-    return '<div class="body-sec">'+headingHtml+
-      paras.map(function(p,pi){return '<p'+(si===0 && pi===0 ? ' class="lede"' : '')+'>'+esc(p)+'</p>';}).join('')+
-    '</div>';
-  }).join('')+'</div>';
 
-  var chapters = w.chapters.map(function(ch,i){
-    return (i>0?'<hr class="rail terra">':'')+chapterHTML(ch);
-  }).join('');
+  // mark the first text block (so its opening paragraph can be a lede)
+  var seenText = false;
+  (w.story||[]).forEach(function(b){ if(b.type==='text' && !seenText){ b._first = true; seenText = true; } });
+
+  var story = (w.story||[]).map(storyBlockHTML).join('');
 
   var drawingsLabel = LANG==='ja' ? '図面' : 'Drawings';
   var planCap = LANG==='ja' ? w.planCaptionJa : w.planCaptionEn;
@@ -429,7 +428,7 @@ function buildProject(w){
   }).join('')+'</dl>'; }
   var credits = '<div class="credits">'+dl(w.credits.slice(0,half))+dl(w.credits.slice(half))+'</div><hr class="rail">';
 
-  c.innerHTML = lede + body + chapters + plan + credits;
+  c.innerHTML = story + plan + credits;
 }
 
 /* ——— navigation ——— */
