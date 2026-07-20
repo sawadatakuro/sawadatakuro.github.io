@@ -433,17 +433,19 @@ contactForm.addEventListener('submit', function(e){
     body: new FormData(contactForm)
   }).then(function(res){ return res.json(); }).then(function(json){
     btn.disabled = false;
+    console.log('Web3Forms response:', json);
     if(json.success){
       status.textContent = t.ok;
       status.className = 'ct-status ok';
       contactForm.reset();
     } else {
-      status.textContent = t.err;
+      status.textContent = t.err + (json.message ? ' ['+json.message+']' : '');
       status.className = 'ct-status err';
     }
-  }).catch(function(){
+  }).catch(function(err){
     btn.disabled = false;
-    status.textContent = t.err;
+    console.error('Web3Forms request failed:', err);
+    status.textContent = t.err + ' [network: '+(err && err.message ? err.message : err)+']';
     status.className = 'ct-status err';
   });
 });
