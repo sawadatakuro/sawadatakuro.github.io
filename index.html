@@ -112,11 +112,11 @@ footer a:hover{border-bottom:1px solid var(--terra-deep)}
 
 figure.full{margin:28px 0 0}
 figcaption{padding:9px 2px 0;font-size:11px;letter-spacing:.03em;color:var(--stone);line-height:1.7}
-.pj-body{display:grid;grid-template-columns:1fr;gap:34px;padding:46px 0;max-width:720px}
-.pj-body .en{font-size:14px}
-.pj-body .ja{font-size:13px;line-height:2.1}
+.pj-body{display:grid;grid-template-columns:1fr;gap:30px;padding:46px 0;max-width:720px}
+.pj-body p{font-size:14px}
 .pj-body p+p{margin-top:1.2em}
 .pj-body .lede{font-family:var(--serif);font-size:18px;line-height:1.85;letter-spacing:.02em;margin-bottom:1.3em}
+.pj-body .body-h{font-family:var(--serif);font-weight:500;font-size:15px;letter-spacing:.06em;color:var(--terra-deep);margin-bottom:14px}
 .grid2{display:grid;grid-template-columns:1fr;gap:30px;margin:34px 0}
 .stack figure+figure{margin-top:30px}
 section.chapter{padding:20px 0 4px}
@@ -404,17 +404,22 @@ function buildProject(w){
 
   var c = document.getElementById('pj-content');
   var lede = '<figure class="full"><img src="'+esc(w.chapters[1]?w.chapters[1].images[0].src:w.cover)+'" alt=""></figure>';
-  var bodyParas = LANG==='ja' ? w.bodyJa : w.bodyEn;
-  var body = '<div class="pj-body"><div class="'+(LANG==='ja'?'ja':'en')+'">'+
-      bodyParas.map(function(p,i){return '<p'+(i===0?' class="lede"':'')+'>'+esc(p)+'</p>';}).join('')+
-    '</div></div>';
+  var body = '<div class="pj-body">'+w.bodySections.map(function(sec,si){
+    var heading = LANG==='ja' ? sec.headingJa : sec.headingEn;
+    var paras = LANG==='ja' ? sec.ja : sec.en;
+    var headingHtml = heading ? '<h3 class="body-h">'+esc(heading)+'</h3>' : '';
+    return '<div class="body-sec">'+headingHtml+
+      paras.map(function(p,pi){return '<p'+(si===0 && pi===0 ? ' class="lede"' : '')+'>'+esc(p)+'</p>';}).join('')+
+    '</div>';
+  }).join('')+'</div>';
 
   var chapters = w.chapters.map(function(ch,i){
     return (i>0?'<hr class="rail terra">':'')+chapterHTML(ch);
   }).join('');
 
   var drawingsLabel = LANG==='ja' ? '図面' : 'Drawings';
-  var plan = w.planImage ? '<hr class="rail"><section class="chapter"><div class="ch-label"><span class="no">—</span><h3>'+drawingsLabel+'</h3></div><div class="plan-wrap"><img src="'+esc(w.planImage)+'" alt="Floor plan"></div></section>' : '';
+  var planCap = LANG==='ja' ? w.planCaptionJa : w.planCaptionEn;
+  var plan = w.planImage ? '<hr class="rail"><section class="chapter"><div class="ch-label"><span class="no">—</span><h3>'+drawingsLabel+'</h3></div><div class="plan-wrap"><img src="'+esc(w.planImage)+'" alt="'+esc(planCap||'Floor plan')+'"></div>'+(planCap?'<figcaption>'+esc(planCap)+'</figcaption>':'')+'</section>' : '';
 
   var half = Math.ceil(w.credits.length/2);
   function dl(list){ return '<dl>'+list.map(function(cr){
