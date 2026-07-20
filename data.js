@@ -26,7 +26,7 @@ const SITE = {
   // 問い合わせフォームの送信先設定（Web3Forms・無料）
   // 1. https://web3forms.com を開き、送り先にしたいメールアドレスを入力して送信
   // 2. そのメール宛に届く Access Key をコピーし、下の "" の中に貼り付けて保存
-  web3formsKey: "YOUR_WEB3FORMS_ACCESS_KEY"
+  web3formsKey: "35cdf238-1ef6-469c-a707-4f788273797e"
 };
 
 const WORKS = [
