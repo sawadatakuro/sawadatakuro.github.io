@@ -21,7 +21,12 @@ const SITE = {
   email: "hello@takurosawada.com",
   instagram: "https://instagram.com/takurosawada",
   aboutEn: "Takuro Sawada is a Tokyo-based designer. Trained as an architect with a background in hospitality design, his independent work explores how the structures a building already holds can be re-read as the source of domestic comfort.",
-  aboutJa: "沢田拓郎 — 東京を拠点とするデザイナー。ホテル設計の経験を背景に、建物がすでに持つ構造を読み替え、住まいの快適さの源泉とする手法を個人名義の活動として探求している。"
+  aboutJa: "沢田拓郎 — 東京を拠点とするデザイナー。ホテル設計の経験を背景に、建物がすでに持つ構造を読み替え、住まいの快適さの源泉とする手法を個人名義の活動として探求している。",
+
+  // 問い合わせフォームの送信先設定（Web3Forms・無料）
+  // 1. https://web3forms.com を開き、送り先にしたいメールアドレスを入力して送信
+  // 2. そのメール宛に届く Access Key をコピーし、下の "" の中に貼り付けて保存
+  web3formsKey: "YOUR_WEB3FORMS_ACCESS_KEY"
 };
 
 const WORKS = [

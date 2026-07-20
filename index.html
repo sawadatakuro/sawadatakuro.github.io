@@ -140,6 +140,20 @@ section.chapter{padding:20px 0 4px}
   .plan-wrap{padding:clamp(16px,4vw,44px);margin:20px 0}
 }
 @media(min-width:760px){ .grid2{grid-template-columns:1fr 1fr} .credits{grid-template-columns:1fr 1fr} }
+
+/* ——— contact ——— */
+.ct-body{max-width:520px;padding:10px 0 80px}
+.ct-form{display:flex;flex-direction:column;gap:22px}
+.ct-form .hp{position:absolute;left:-9999px}
+.ct-form label{display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--stone)}
+.ct-form input[type=text],.ct-form input[type=email],.ct-form textarea{font:14px/1.6 var(--sans);letter-spacing:.01em;color:var(--ink);background:#fff;border:1px solid rgba(44,36,28,.22);padding:11px 12px;border-radius:2px;resize:vertical}
+.ct-form input:focus,.ct-form textarea:focus{outline:none;border-color:var(--terra-deep)}
+.ct-submit{align-self:flex-start;margin-top:6px;background:var(--umber);color:var(--paper);border:none;padding:12px 30px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;cursor:pointer}
+.ct-submit:hover{background:var(--terra-deep)}
+.ct-submit:disabled{opacity:.5;cursor:default}
+.ct-status{font-size:12.5px;letter-spacing:.03em;min-height:1.4em}
+.ct-status.ok{color:#3f6b3f}
+.ct-status.err{color:#a13a2f}
 </style>
 </head>
 <body>
@@ -164,7 +178,7 @@ section.chapter{padding:20px 0 4px}
 <nav class="drawer" id="drawer" aria-hidden="true">
   <button onclick="showIndex();closeDrawer()">Works</button>
   <button onclick="showIndex(true);closeDrawer()">About</button>
-  <a id="nav-contact" href="#" onclick="closeDrawer()">Contact</a>
+  <button onclick="showContact();closeDrawer()">Contact</button>
 </nav>
 
 <!-- INDEX -->
@@ -208,6 +222,39 @@ section.chapter{padding:20px 0 4px}
   <div class="wrap" id="pj-content"></div>
 </main>
 
+<!-- CONTACT -->
+<main class="view" id="view-contact">
+  <div class="wrap">
+    <div class="pj-head">
+      <button class="backlink" onclick="showIndex()">← <span id="ct-back"></span></button>
+      <div class="eyebrow" id="ct-eyebrow" style="margin-top:14px"></div>
+      <h1 id="ct-title"></h1>
+    </div>
+  </div>
+  <hr class="rail">
+  <div class="wrap ct-body">
+    <form id="contact-form" class="ct-form">
+      <input type="hidden" name="access_key" value="">
+      <input type="hidden" name="subject" value="New message from portfolio site">
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off">
+      <label>
+        <span id="ct-label-name"></span>
+        <input type="text" name="name" required>
+      </label>
+      <label>
+        <span id="ct-label-email"></span>
+        <input type="email" name="email" required>
+      </label>
+      <label>
+        <span id="ct-label-message"></span>
+        <textarea name="message" rows="6" required></textarea>
+      </label>
+      <button type="submit" class="ct-submit" id="ct-submit"></button>
+      <p class="ct-status" id="ct-status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</main>
+
 <script src="data.js"></script>
 <script>
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -220,6 +267,14 @@ var ROLE_JA = {
   'Design':'設計','Photography':'写真','Plasterwork — walls':'左官（壁）','Plasterwork — ceiling':'左官（天井）',
   'Location':'所在地','Floor area':'延床面積','Completion':'竣工','Featured in':'掲載'
 };
+var CT = {
+  en:{ back:'Works', eyebrow:'Contact', title:'Get in touch', name:'Name', email:'Email', message:'Message',
+       send:'Send', sending:'Sending…', ok:'Thank you — your message has been sent.',
+       err:'Something went wrong. Please try again, or email directly at '+SITE.email+'.' },
+  ja:{ back:'作品一覧', eyebrow:'問い合わせ', title:'お問い合わせ', name:'お名前', email:'メールアドレス', message:'メッセージ',
+       send:'送信する', sending:'送信中…', ok:'送信しました。ご連絡ありがとうございます。',
+       err:'送信に失敗しました。時間をおいて再度お試しいただくか、'+SITE.email+' まで直接ご連絡ください。' }
+};
 
 function setLang(l){
   LANG = l;
@@ -229,6 +284,9 @@ function setLang(l){
   buildIndex();
   if(currentWorkIndex!==null && document.getElementById('view-project').classList.contains('active')){
     buildProject(WORKS[currentWorkIndex]);
+  }
+  if(document.getElementById('view-contact').classList.contains('active')){
+    buildContact();
   }
 }
 function updateLangUI(){
@@ -261,7 +319,6 @@ function buildIndex(){
   document.getElementById('hero-img').src = SITE.heroImage;
   document.getElementById('hero-h1').textContent = LANG==='ja' ? SITE.heroHeadingJa : SITE.heroHeadingEn;
   document.getElementById('about-text').textContent = LANG==='ja' ? SITE.aboutJa : SITE.aboutEn;
-  document.getElementById('nav-contact').href = 'mailto:'+SITE.email;
   document.getElementById('foot-copy').textContent = '© '+SITE.name.replace(/\b\w/g,c=>c.toUpperCase());
   document.getElementById('foot-links').innerHTML =
     '<a href="mailto:'+esc(SITE.email)+'">'+esc(SITE.email)+'</a> · <a href="'+esc(SITE.instagram)+'">Instagram</a>';
@@ -341,6 +398,56 @@ function showProject(i){
   document.getElementById('view-project').classList.add('active');
   window.scrollTo({top:0,behavior:'instant'});
 }
+
+/* ——— contact ——— */
+function buildContact(){
+  var t = CT[LANG];
+  document.getElementById('ct-back').textContent = t.back;
+  document.getElementById('ct-eyebrow').textContent = t.eyebrow;
+  document.getElementById('ct-title').textContent = t.title;
+  document.getElementById('ct-label-name').textContent = t.name;
+  document.getElementById('ct-label-email').textContent = t.email;
+  document.getElementById('ct-label-message').textContent = t.message;
+  document.getElementById('ct-submit').textContent = t.send;
+}
+function showContact(){
+  buildContact();
+  document.querySelectorAll('.view').forEach(e=>e.classList.remove('active'));
+  document.getElementById('view-contact').classList.add('active');
+  window.scrollTo({top:0,behavior:'instant'});
+}
+
+var contactForm = document.getElementById('contact-form');
+contactForm.querySelector('input[name="access_key"]').value = SITE.web3formsKey;
+contactForm.addEventListener('submit', function(e){
+  e.preventDefault();
+  var t = CT[LANG];
+  var btn = document.getElementById('ct-submit');
+  var status = document.getElementById('ct-status');
+  status.className = 'ct-status';
+  status.textContent = t.sending;
+  btn.disabled = true;
+  fetch('https://api.web3forms.com/submit', {
+    method: 'POST',
+    headers: { 'Accept': 'application/json' },
+    body: new FormData(contactForm)
+  }).then(function(res){ return res.json(); }).then(function(json){
+    btn.disabled = false;
+    if(json.success){
+      status.textContent = t.ok;
+      status.className = 'ct-status ok';
+      contactForm.reset();
+    } else {
+      status.textContent = t.err;
+      status.className = 'ct-status err';
+    }
+  }).catch(function(){
+    btn.disabled = false;
+    status.textContent = t.err;
+    status.className = 'ct-status err';
+  });
+});
+
 document.documentElement.lang = LANG;
 updateLangUI();
 buildIndex();
