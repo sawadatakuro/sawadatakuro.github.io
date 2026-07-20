@@ -342,15 +342,37 @@ function buildHeroSlides(){
   document.getElementById('hero-slides').innerHTML = imgs.map(function(src,i){
     return '<img class="hero-slide'+(i===0?' active':'')+'" src="'+esc(src)+'" alt="">';
   }).join('');
-  if(heroSlideTimer){ clearInterval(heroSlideTimer); heroSlideTimer = null; }
   heroSlideIndex = 0;
-  if(imgs.length>1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
-    heroSlideTimer = setInterval(function(){
-      var slides = document.querySelectorAll('.hero-slide');
-      slides[heroSlideIndex].classList.remove('active');
-      heroSlideIndex = (heroSlideIndex+1) % slides.length;
-      slides[heroSlideIndex].classList.add('active');
-    }, 6000);
+  heroStartTimer();
+}
+function heroStartTimer(){
+  if(heroSlideTimer){ clearInterval(heroSlideTimer); heroSlideTimer = null; }
+  var count = document.querySelectorAll('.hero-slide').length;
+  if(count>1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    heroSlideTimer = setInterval(function(){ heroStep(1); }, 6000);
+  }
+}
+function heroStep(dir){
+  var slides = document.querySelectorAll('.hero-slide');
+  if(slides.length<2) return;
+  slides[heroSlideIndex].classList.remove('active');
+  heroSlideIndex = ((heroSlideIndex+dir) % slides.length + slides.length) % slides.length;
+  slides[heroSlideIndex].classList.add('active');
+}
+
+var heroTouchX = null, heroTouchY = null;
+function heroTouchStart(e){
+  var t = e.changedTouches[0];
+  heroTouchX = t.clientX; heroTouchY = t.clientY;
+}
+function heroTouchEnd(e){
+  if(heroTouchX===null) return;
+  var t = e.changedTouches[0];
+  var dx = t.clientX - heroTouchX, dy = t.clientY - heroTouchY;
+  heroTouchX = null;
+  if(Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)*1.5){
+    heroStep(dx<0 ? 1 : -1);
+    heroStartTimer();
   }
 }
 
@@ -470,6 +492,9 @@ contactForm.addEventListener('submit', function(e){
     status.className = 'ct-status err';
   });
 });
+
+document.getElementById('hero').addEventListener('touchstart', heroTouchStart, {passive:true});
+document.getElementById('hero').addEventListener('touchend', heroTouchEnd, {passive:true});
 
 document.documentElement.lang = LANG;
 updateLangUI();
