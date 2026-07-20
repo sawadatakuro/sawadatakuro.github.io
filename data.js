@@ -168,4 +168,43 @@ const WORKS = [
       { role: "Featured in", value: "—" }
     ]
   }
+
+  /* ——— 次の作品を足すときは、上の } の後にカンマを打ち、
+     同じ形の { ... } をコピーして中身を書き換える ———
+  ,{
+    slug: "next-project",
+    title: "Next Project",
+    titleJa: "次の作品",
+    subtitleJa: "",
+    location: "City, Japan",
+    year: "2027",
+    cover: "images/next-project/00-cover.jpg",
+
+    story: [
+      { type:"image", src:"images/next-project/01-overview.jpg",
+        capEn:"Caption in English.",
+        capJa:"日本語のキャプション。" },
+
+      { type:"text", headingEn:"", headingJa:"",
+        en:[ "Opening paragraph in English." ],
+        ja:[ "冒頭の段落（日本語）。" ]
+      },
+
+      { type:"pair", items:[
+        { src:"images/next-project/02-detail.jpg", capEn:"Caption A.", capJa:"キャプションA。" },
+        { src:"images/next-project/03-detail.jpg", capEn:"Caption B.", capJa:"キャプションB。" }
+      ]}
+    ],
+
+    planImage: "images/next-project/99-plan.jpg",
+    planCaptionEn: "Plan caption in English.",
+    planCaptionJa: "図面のキャプション。",
+
+    credits: [
+      { role: "Design", value: "Takuro Sawada" },
+      { role: "Location", value: "City, Japan" },
+      { role: "Completion", value: "2027" }
+    ]
+  }
+  */
 ];
