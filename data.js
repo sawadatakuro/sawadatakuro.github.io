@@ -14,8 +14,15 @@ const SITE = {
   name: "TAKURO SAWADA",
   nameJa: "沢田拓郎",
   role: "Designer, Tokyo",
-  // トップページの全画面背景写真
+  // トップページの全画面背景写真（フェードで切り替わるスライドショー）
+  // 1枚だけにしたいときは heroImages の中を1つだけにする
   heroImage: "images/fluid-vessel/00-hero.jpg",
+  heroImages: [
+    "images/fluid-vessel/00-hero.jpg",
+    "images/fluid-vessel/02-living-vault.jpg",
+    "images/fluid-vessel/13-living-panorama.jpg",
+    "images/fluid-vessel/14-night-halo.jpg"
+  ],
   heroHeadingEn: "Spaces drawn from what a site already holds.",
   heroHeadingJa: "その場所がすでに持っているものから、空間を引き出す。",
   email: "hello@takurosawada.com",

@@ -73,7 +73,9 @@ header{position:sticky;top:0;z-index:105;background:rgba(237,232,223,.9);backdro
 .hero{position:relative;height:calc(100vh - 56px);min-height:460px;overflow:hidden;background:#000}
 @media(min-width:620px){.hero{height:calc(100vh - 66px)}}
 @media(min-width:960px){.hero{height:calc(100vh - 74px)}}
-.hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.82)}
+.hero-slides{position:absolute;inset:0}
+.hero-slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.82);opacity:0;transition:opacity 1.8s ease}
+.hero-slide.active{opacity:1}
 .hero .hero-txt{position:absolute;left:0;right:0;bottom:0;padding:0 var(--pad-x) 8vh;color:#fff}
 .hero h1{font-family:var(--serif);font-weight:500;font-size:clamp(24px,4.6vw,44px);letter-spacing:.04em;line-height:1.32;max-width:15em;text-shadow:0 1px 24px rgba(0,0,0,.35)}
 .scroll-cue{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);color:rgba(255,255,255,.8);font-size:10px;letter-spacing:.28em;text-transform:uppercase;animation:bob 2.4s ease-in-out infinite}
@@ -184,7 +186,7 @@ section.chapter{padding:20px 0 4px}
 <!-- INDEX -->
 <main class="view active" id="view-index">
   <section class="hero" id="hero">
-    <img id="hero-img" alt="">
+    <div class="hero-slides" id="hero-slides"></div>
     <div class="hero-txt">
       <h1 id="hero-h1"></h1>
     </div>
@@ -316,7 +318,6 @@ document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeDraw
 /* ——— build index ——— */
 function buildIndex(){
   document.querySelector('.brand').textContent = SITE.name;
-  document.getElementById('hero-img').src = SITE.heroImage;
   document.getElementById('hero-h1').textContent = LANG==='ja' ? SITE.heroHeadingJa : SITE.heroHeadingEn;
   document.getElementById('about-text').textContent = LANG==='ja' ? SITE.aboutJa : SITE.aboutEn;
   document.getElementById('foot-copy').textContent = '© '+SITE.name.replace(/\b\w/g,c=>c.toUpperCase());
@@ -331,6 +332,26 @@ function buildIndex(){
       '<span class="tag">'+esc(w.location.split(',').slice(-2).join(',').trim())+' · '+esc(w.year)+'</span></div></button>';
   }).join('');
   document.getElementById('works-list').innerHTML = html;
+}
+
+/* ——— hero slideshow ——— */
+var heroSlideIndex = 0;
+var heroSlideTimer = null;
+function buildHeroSlides(){
+  var imgs = (SITE.heroImages && SITE.heroImages.length) ? SITE.heroImages : [SITE.heroImage];
+  document.getElementById('hero-slides').innerHTML = imgs.map(function(src,i){
+    return '<img class="hero-slide'+(i===0?' active':'')+'" src="'+esc(src)+'" alt="">';
+  }).join('');
+  if(heroSlideTimer){ clearInterval(heroSlideTimer); heroSlideTimer = null; }
+  heroSlideIndex = 0;
+  if(imgs.length>1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    heroSlideTimer = setInterval(function(){
+      var slides = document.querySelectorAll('.hero-slide');
+      slides[heroSlideIndex].classList.remove('active');
+      heroSlideIndex = (heroSlideIndex+1) % slides.length;
+      slides[heroSlideIndex].classList.add('active');
+    }, 6000);
+  }
 }
 
 /* ——— build a project ——— */
@@ -453,6 +474,7 @@ contactForm.addEventListener('submit', function(e){
 document.documentElement.lang = LANG;
 updateLangUI();
 buildIndex();
+buildHeroSlides();
 </script>
 </body>
 </html>
